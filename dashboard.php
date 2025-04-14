@@ -33,7 +33,9 @@ $stats['total_earnings'] = $row['total'] ? $row['total'] : 0;
 // Get recent job requests
 $recent_jobs = [];
 $result = $conn->query("
-    SELECT j.id, j.title, j.status, c.name as customer, l.name as laborer
+    SELECT j.id, j.title, j.status, j.created_at,
+           CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
+           CONCAT(l.first_name, ' ', l.last_name) AS laborer_name
     FROM jobs j
     JOIN users c ON j.customer_id = c.id
     LEFT JOIN users l ON j.laborer_id = l.id
@@ -103,8 +105,8 @@ if ($result && $result->num_rows > 0) {
                 <tr>
                     <td>#<?php echo $job['id']; ?></td>
                     <td><?php echo $job['title']; ?></td>
-                    <td><?php echo $job['customer']; ?></td>
-                    <td><?php echo $job['laborer'] ? $job['laborer'] : 'Not Assigned'; ?></td>
+                    <td><?php echo $job['customer_name']; ?></td>
+                    <td><?php echo $job['laborer_name'] ? $job['laborer_name'] : 'Not Assigned'; ?></td>
                     <td><?php echo ucfirst($job['status']); ?></td>
                     <td><a href="view_job.php?id=<?php echo $job['id']; ?>" class="btn">View</a></td>
                 </tr>

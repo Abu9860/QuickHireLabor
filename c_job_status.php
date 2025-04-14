@@ -111,7 +111,7 @@ if (isset($_POST['action'])) {
 }
 
 // Get jobs data with laborer info
-$stmt = $conn->prepare("SELECT j.*, u.name as laborer_name, u.phone as laborer_phone 
+$stmt = $conn->prepare("SELECT j.*, CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, u.phone as laborer_phone 
                        FROM jobs j 
                        LEFT JOIN users u ON j.laborer_id = u.id 
                        WHERE j.customer_id = ? 

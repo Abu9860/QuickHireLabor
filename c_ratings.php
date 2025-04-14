@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Get completed jobs without reviews
 $stmt = $conn->prepare("
-    SELECT j.*, u.name as laborer_name 
+    SELECT j.*, CONCAT(u.first_name, ' ', u.last_name) AS laborer_name 
     FROM jobs j 
     JOIN users u ON j.laborer_id = u.id
     LEFT JOIN ratings r ON j.id = r.job_id 
@@ -75,7 +75,7 @@ $pending_reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Get ratings data
 $user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT r.*, j.title as job_title, u.name as laborer_name 
+$stmt = $conn->prepare("SELECT r.*, j.title as job_title, CONCAT(u.first_name, ' ', u.last_name) AS laborer_name 
                        FROM ratings r 
                        JOIN jobs j ON r.job_id = j.id 
                        JOIN users u ON r.laborer_id = u.id 

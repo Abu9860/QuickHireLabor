@@ -8,27 +8,37 @@ if (!isLoggedIn() || !isCustomer()) {
 }
 
 // Get user data
-$user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
-$stmt->bind_param("i", $user_id);
+$stmt = $conn->prepare("SELECT first_name, last_name FROM users WHERE id = ?");
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
-$user = $stmt->get_result()->fetch_assoc();
+$result = $stmt->get_result();
+
+if ($result->num_rows == 1) {
+    $user = $result->fetch_assoc();
+    // Combine first_name and last_name for display
+    $user_name = $user['first_name'] . ' ' . $user['last_name'];
+} else {
+    // Handle error or redirect
+    header("Location: login.php");
+    exit();
+}
 
 // Get recent jobs
 $stmt = $conn->prepare("
-    SELECT j.*, u.name as laborer_name 
-    FROM jobs j 
-    LEFT JOIN users u ON j.laborer_id = u.id 
-    WHERE j.customer_id = ? 
-    ORDER BY j.created_at DESC LIMIT 5
+    SELECT j.id, j.title, j.description, j.location, j.status, j.created_at, 
+           CONCAT(u.first_name, ' ', u.last_name) AS laborer_name
+    FROM jobs j
+    LEFT JOIN users u ON j.laborer_id = u.id
+    WHERE j.customer_id = ?
+    ORDER BY j.created_at DESC
 ");
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $recent_jobs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Get unread notifications count
 $stmt = $conn->prepare("SELECT COUNT(*) as count FROM notifications WHERE user_id = ? AND is_read = 0");
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $unread_notifications = $stmt->get_result()->fetch_assoc()['count'];
 ?>
@@ -121,7 +131,7 @@ $unread_notifications = $stmt->get_result()->fetch_assoc()['count'];
 
     <div class="container">
         <div class="welcome-message">
-            <h1>Welcome back, <?php echo htmlspecialchars($user['name']); ?>!</h1>
+            <h1>Welcome back, <?php echo htmlspecialchars($user_name); ?>!</h1>
             <p>Here's an overview of your activity</p>
         </div>
 

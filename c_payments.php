@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Modified query to check job status
         $stmt = $conn->prepare("
-            SELECT j.*, u.id as laborer_id, u.name as laborer_name 
+            SELECT j.*, CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, u.id as laborer_id
             FROM jobs j 
             JOIN users u ON j.laborer_id = u.id 
             WHERE j.id = ? AND j.customer_id = ? 
@@ -137,7 +137,7 @@ $payment_stats = $stmt->get_result()->fetch_assoc();
 // Get pending payments with additional details
 $stmt = $conn->prepare("
     SELECT j.*, 
-           u.name as laborer_name, 
+           CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, 
            u.phone as laborer_phone,
            u.profile_pic as laborer_pic,
            u.address as laborer_address,
@@ -160,7 +160,7 @@ $pending_payments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 // Get payment history with detailed information
 $stmt = $conn->prepare("
     SELECT p.*, j.title as job_title, j.description,
-           u.name as laborer_name, u.profile_pic as laborer_pic,
+           CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, u.profile_pic as laborer_pic,
            u.phone as laborer_phone, u.email as laborer_email
     FROM payments p 
     JOIN jobs j ON p.job_id = j.id 

@@ -10,6 +10,7 @@ $input = [
     'name' => '',
     'last_name' => '',
     'email' => '',
+    'mobile' => '',
     'role' => 'customer'
 ];
 
@@ -19,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $input['name'] = sanitize_input($_POST['name']);
     $input['last_name'] = sanitize_input($_POST['last_name']);
     $input['email'] = sanitize_input($_POST['email']);
+    $input['mobile'] = sanitize_input($_POST['mobile']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
     $input['role'] = isset($_POST['role']) ? sanitize_input($_POST['role']) : 'customer';
@@ -40,6 +42,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } elseif (!filter_var($input['email'], FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Invalid email format";
         $error_fields[] = 'email';
+    }
+    
+    if (empty($input['mobile'])) {
+        $errors[] = "Mobile number is required";
+        $error_fields[] = 'mobile';
+    } elseif (!preg_match('/^[0-9]{10,15}$/', $input['mobile'])) {
+        $errors[] = "Invalid mobile number format";
+        $error_fields[] = 'mobile';
     }
     
     if (empty($password)) {
@@ -68,27 +78,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     // If no errors, insert user into database
     if (empty($errors)) {
-        $name = $input['name'] . ' ' . $input['last_name']; // Combine names
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
         
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $name, $input['email'], $hashed_password, $input['role']);
+        $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssss", $input['name'], $input['last_name'], $input['email'], $input['mobile'], $hashed_password, $input['role']);
         
         if ($stmt->execute()) {
-            $success = true;
-            $_SESSION['user_id'] = $stmt->insert_id;
-            $_SESSION['user_name'] = $name;
-            $_SESSION['role'] = $input['role'];
+            // Don't automatically log in the user
+            // Instead, store a registration success message in session
+            $_SESSION['registration_success'] = "Registration successful! Please log in with your email and password.";
             
-            // Store success message in session
-            $_SESSION['registration_success'] = "Registration successful! You are now logged in.";
-            
-            // Redirect based on role - This prevents form resubmission
-            if ($input['role'] == 'admin') {
-                header("Location: dashboard.php");
-            } else {
-                header("Location: index.php");
-            }
+            // Redirect to login page
+            header("Location: login.php");
             exit();
         } else {
             $errors[] = "Error: " . $stmt->error;
@@ -160,6 +161,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="form-group">
           <input type="email" name="email" class="form-control <?php echo in_array('email', $error_fields) ? 'error' : ''; ?>" 
                  placeholder="Email Address" value="<?php echo htmlspecialchars($input['email']); ?>" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="mobile" class="form-control <?php echo in_array('mobile', $error_fields) ? 'error' : ''; ?>" 
+                 placeholder="Mobile Number" value="<?php echo htmlspecialchars($input['mobile']); ?>" required>
         </div>
         <div class="form-group">
           <input type="password" name="password" class="form-control <?php echo in_array('password', $error_fields) ? 'error' : ''; ?>" 

@@ -16,7 +16,7 @@ if (isset($_POST['filter'])) {
         $date_filter = isset($_POST['date_filter']) ? sanitize_input($_POST['date_filter']) : '';
         
         $sql = "SELECT j.*, 
-                u.name as laborer_name, 
+                CONCAT(u.first_name, ' ', u.last_name) as laborer_name, 
                 u.phone as laborer_phone,
                 u.profile_pic as laborer_pic,
                 COUNT(DISTINCT r.id) as total_reviews,
@@ -71,7 +71,7 @@ if (isset($_POST['filter'])) {
 $stmt = $conn->prepare("
     SELECT 
         j.*,
-        u.name as laborer_name,
+        CONCAT(u.first_name, ' ', u.last_name) as laborer_name,
         u.phone as laborer_phone,
         u.profile_pic as laborer_pic,
         u.address as laborer_address,

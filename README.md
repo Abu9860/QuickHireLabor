@@ -101,3 +101,21 @@ Need help? Check:
 - 📝 XAMPP error logs
 - ⚠️ PHP error log
 - 📧 Contact admin support
+
+
+# Database Migrations
+
+This directory is used for CSV files containing data to be imported into the database tables.
+
+## How to Use
+
+1. Create a CSV file with the exact name of the table you want to import data into (e.g., `services.csv` for the `services` table)
+2. The first row of the CSV must contain the column names exactly as they appear in the database
+3. Subsequent rows should contain the data to be imported
+4. Place the CSV file in this directory
+5. Run the `sql_setup.php` script to import the data
+
+## Example
+
+For the `services` table, create a file named `services.csv` with contents like:
+
