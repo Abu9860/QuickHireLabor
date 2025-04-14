@@ -234,7 +234,7 @@
                 <div class="faq-answer" id="answer-6">
                     <p>Yes, customers can post jobs. Follow these steps:</p>
                     <ol>
-                        <li>Log in to your account and go to the "Post a Job" section.</li>
+                        <li>Login to your account and go to the "Post a Job" section.</li>
                         <li>Fill in the job details such as description, location, required skills, and timeline.</li>
                         <li>Click "Submit" to publish your job listing and wait for laborers to apply.</li>
                         <li>You can review applicants, check their profiles, and select the best fit for the job.</li>
