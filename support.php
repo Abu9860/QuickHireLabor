@@ -39,7 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_response'])) {
 // Get all tickets with user information
 try {
     $stmt = $conn->prepare("
+<<<<<<< HEAD
         SELECT t.*, u.first_name, u.email, 
+=======
+        SELECT t.*, u.name, u.email, 
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                DATE_FORMAT(t.created_at, '%b %d, %Y %H:%i') as ticket_date,
                DATE_FORMAT(t.responded_at, '%b %d, %Y %H:%i') as response_date
         FROM support_tickets t
@@ -172,7 +176,11 @@ try {
                     <tr class="ticket-row <?php echo 'status-' . $ticket['status']; ?>">
                         <td><?php echo $ticket['ticket_date']; ?></td>
                         <td>
+<<<<<<< HEAD
                             <?php echo htmlspecialchars($ticket['first_name']); ?><br>
+=======
+                            <?php echo htmlspecialchars($ticket['name']); ?><br>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             <small><?php echo htmlspecialchars($ticket['email']); ?></small>
                         </td>
                         <td><?php echo htmlspecialchars($ticket['subject']); ?></td>

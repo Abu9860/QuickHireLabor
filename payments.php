@@ -7,12 +7,15 @@ if (!isLoggedIn() || !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
 // Function to check if a table exists
 function tableExists($conn, $tableName) {
     $result = $conn->query("SHOW TABLES LIKE '$tableName'");
     return $result && $result->num_rows > 0;
 }
 
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 // Update payment status if requested
 if (isset($_POST['update_status'])) {
     $payment_id = (int)$_POST['payment_id'];
@@ -30,6 +33,7 @@ if (isset($_POST['update_status'])) {
 
 // Get all payments with job and user details
 $payments = [];
+<<<<<<< HEAD
 
 // Check if required tables exist
 $requiredTables = ['payments', 'jobs', 'users'];
@@ -56,6 +60,19 @@ if ($allTablesExist) {
         while ($row = $result->fetch_assoc()) {
             $payments[] = $row;
         }
+=======
+$sql = "SELECT p.*, j.title as job_title, u.name as customer_name, l.name as laborer_name 
+        FROM payments p 
+        JOIN jobs j ON p.job_id = j.id 
+        JOIN users u ON j.customer_id = u.id 
+        LEFT JOIN users l ON j.laborer_id = l.id 
+        ORDER BY p.created_at DESC";
+
+$result = $conn->query($sql);
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $payments[] = $row;
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     }
 }
 ?>
@@ -84,10 +101,13 @@ if ($allTablesExist) {
             <div class="alert error"><?php echo $update_error; ?></div>
         <?php endif; ?>
 
+<<<<<<< HEAD
         <?php if (isset($setup_error)): ?>
             <div class="alert error"><?php echo $setup_error; ?></div>
         <?php endif; ?>
 
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         <div class="table-section">
             <h3>All Payments</h3>
             <?php if (!empty($payments)): ?>
@@ -108,7 +128,11 @@ if ($allTablesExist) {
                             <td><?php echo $payment['job_title']; ?></td>
                             <td><?php echo $payment['customer_name']; ?></td>
                             <td><?php echo $payment['laborer_name'] ?? 'Not Assigned'; ?></td>
+<<<<<<< HEAD
                             <td>₹<?php echo number_format($payment['amount'], 2); ?></td>
+=======
+                            <td>$<?php echo number_format($payment['amount'], 2); ?></td>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             <td><?php echo ucfirst($payment['status']); ?></td>
                             <td><?php echo date('M d, Y', strtotime($payment['created_at'])); ?></td>
                             <td>

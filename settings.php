@@ -108,11 +108,19 @@ while ($row = $result->fetch_assoc()) {
                         <input type="number" name="settings[service_fee_percentage]" value="<?php echo htmlspecialchars($settings['service_fee_percentage']); ?>" min="0" max="100" required>
                     </div>
                     <div class="form-group">
+<<<<<<< HEAD
                         <label>Minimum Job Price (₹):</label>
                         <input type="number" name="settings[min_job_price]" value="<?php echo htmlspecialchars($settings['min_job_price']); ?>" min="0" required>
                     </div>
                     <div class="form-group">
                         <label>Maximum Job Price (₹):</label>
+=======
+                        <label>Minimum Job Price ($):</label>
+                        <input type="number" name="settings[min_job_price]" value="<?php echo htmlspecialchars($settings['min_job_price']); ?>" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Maximum Job Price ($):</label>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                         <input type="number" name="settings[max_job_price]" value="<?php echo htmlspecialchars($settings['max_job_price']); ?>" min="0" required>
                     </div>
                 </div>

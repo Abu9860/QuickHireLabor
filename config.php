@@ -7,7 +7,11 @@ if (session_status() === PHP_SESSION_NONE) {
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
+<<<<<<< HEAD
 define('DB_NAME', 'dbv01');
+=======
+define('DB_NAME', 'lastop');
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 
 // Create database connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);

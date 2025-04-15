@@ -11,6 +11,7 @@ $user = isset($user) ? $user : [
     'profile_pic' => 'images/default_profile.png'
 ];
 ?>
+<<<<<<< HEAD
 <nav class="sidebar">
     <div class="sidebar-header">
         <h2>QuickHire Labor</h2>
@@ -26,6 +27,27 @@ $user = isset($user) ? $user : [
         <li><a href="logout.php">Logout</a></li>
     </ul>
 </nav>
+=======
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h3>Quick-Hire Labor</h3>
+    </div>
+    
+    <ul class="nav-links">
+        <li><a href="customer_dashboard.php" <?php echo basename($_SERVER['PHP_SELF']) == 'customer_dashboard.php' ? 'class="active"' : ''; ?>>Dashboard</a></li>
+        <li><a href="c_my_jobs.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_my_jobs.php' ? 'class="active"' : ''; ?>>My Jobs</a></li>
+        <li><a href="c_profile.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_profile.php' ? 'class="active"' : ''; ?>>Profile</a></li>
+        <li><a href="c_search_labor.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_search_labor.php' ? 'class="active"' : ''; ?>>Search Laborers</a></li>
+        <li><a href="c_post_job.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_post_job.php' ? 'class="active"' : ''; ?>>Post Job</a></li>
+        <li><a href="c_job_status.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_job_status.php' ? 'class="active"' : ''; ?>>Job Status</a></li>
+        <li><a href="c_ratings.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_ratings.php' ? 'class="active"' : ''; ?>>Ratings & Reviews</a></li>
+        <li><a href="c_payments.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_payments.php' ? 'class="active"' : ''; ?>>Payments</a></li>
+        <li><a href="c_notification.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_notification.php' ? 'class="active"' : ''; ?>>Notifications</a></li>
+        <li><a href="c_support.php" <?php echo basename($_SERVER['PHP_SELF']) == 'c_support.php' ? 'class="active"' : ''; ?>>Support</a></li>
+        <li><a href="logout.php">Logout</a></li>
+    </ul>
+</div>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 <style>
     .sidebar {
         height: 100%;

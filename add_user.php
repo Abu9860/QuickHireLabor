@@ -11,18 +11,24 @@ $errors = [];
 $success = false;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+<<<<<<< HEAD
     // Change from $_POST['first_name'] to $_POST['name'] to match the form field
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     $name = sanitize_input($_POST['name']);
     $email = sanitize_input($_POST['email']);
     $password = $_POST['password'];
     $role = sanitize_input($_POST['role']);
     $phone = sanitize_input($_POST['phone']);
 
+<<<<<<< HEAD
     // Split name into first_name and last_name
     $name_parts = explode(' ', $name, 2);
     $first_name = $name_parts[0];
     $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
 
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     // Validate input
     if (empty($name)) $errors[] = "Name is required";
     if (empty($email)) $errors[] = "Email is required";
@@ -40,8 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($errors)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+<<<<<<< HEAD
         $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, password, role, phone) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssss", $first_name, $last_name, $email, $hashed_password, $role, $phone);
+=======
+        $stmt = $conn->prepare("INSERT INTO users (name, email, password, role, phone) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $name, $email, $hashed_password, $role, $phone);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         
         if ($stmt->execute()) {
             $success = true;

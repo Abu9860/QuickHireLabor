@@ -9,6 +9,7 @@ if (!isLoggedIn() || !isAdmin()) {
 
 $errors = [];
 $success = false;
+<<<<<<< HEAD
 
 // Get user ID from URL
 if (isset($_GET['id'])) {
@@ -19,16 +20,29 @@ if (isset($_GET['id'])) {
 }
 
 // Get user data
+=======
+$user = null;
+
+// Get user ID from URL
+$user_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Get user details
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
+<<<<<<< HEAD
 if ($result->num_rows == 0) {
+=======
+if ($result->num_rows === 0) {
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     header("Location: manage_users.php");
     exit();
 }
 
+<<<<<<< HEAD
 // Get user data
 $user = $result->fetch_assoc();
 
@@ -65,6 +79,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format";
 
     // Check if email already exists (but not for the current user)
+=======
+$user = $result->fetch_assoc();
+
+// Handle form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $name = sanitize_input($_POST['name']);
+    $email = sanitize_input($_POST['email']);
+    $role = sanitize_input($_POST['role']);
+    $phone = sanitize_input($_POST['phone']);
+    $new_password = $_POST['new_password'];
+
+    // Validate input
+    if (empty($name)) $errors[] = "Name is required";
+    if (empty($email)) $errors[] = "Email is required";
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = "Invalid email format";
+
+    // Check if email exists (excluding current user)
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
     $stmt->bind_param("si", $email, $user_id);
     $stmt->execute();
@@ -73,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
+<<<<<<< HEAD
         // If password is provided, update it; otherwise, just update other fields
         if (!empty($password)) {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -85,6 +118,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($stmt->execute()) {
             $success = true;
+=======
+        if (!empty($new_password)) {
+            // Update with new password
+            if (strlen($new_password) < 6) {
+                $errors[] = "Password must be at least 6 characters";
+            } else {
+                $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, password = ?, role = ?, phone = ? WHERE id = ?");
+                $stmt->bind_param("sssssi", $name, $email, $hashed_password, $role, $phone, $user_id);
+            }
+        } else {
+            // Update without changing password
+            $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, role = ?, phone = ? WHERE id = ?");
+            $stmt->bind_param("ssssi", $name, $email, $role, $phone, $user_id);
+        }
+
+        if (empty($errors) && $stmt->execute()) {
+            $success = true;
+            // Refresh user data
+            $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $user = $stmt->get_result()->fetch_assoc();
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         } else {
             $errors[] = "Error updating user: " . $stmt->error;
         }
@@ -99,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit User - Quick-Hire Labor</title>
     <link rel="stylesheet" href="css/style.css">
+<<<<<<< HEAD
     <style>
         .admin-form {
             max-width: 600px;
@@ -140,13 +198,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: white;
         }
     </style>
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 </head>
 <body>
     <?php include 'includes/admin_sidebar.php'; ?>
 
     <div class="content">
         <header>
+<<<<<<< HEAD
             <h2>Edit User</h2>
+=======
+            <h2>Edit User: <?php echo htmlspecialchars($user['name']); ?></h2>
+            <a href="manage_users.php" class="btn-back">Back to Users</a>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         </header>
 
         <?php if ($success): ?>

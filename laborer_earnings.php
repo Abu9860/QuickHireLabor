@@ -9,7 +9,11 @@ if (!isLoggedIn() || !isLaborer()) {
 
 // Get user data
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT CONCAT(first_name, ' ', last_name) AS name FROM users WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -18,8 +22,13 @@ $user = $stmt->get_result()->fetch_assoc();
 $stmt = $conn->prepare("
     SELECT 
         COUNT(*) as total_jobs,
+<<<<<<< HEAD
         SUM(CASE WHEN status = 'completed' THEN budget ELSE 0 END) as total_earnings,
         AVG(CASE WHEN status = 'completed' THEN budget ELSE NULL END) as avg_earnings,
+=======
+        SUM(CASE WHEN status = 'completed' THEN price ELSE 0 END) as total_earnings,
+        AVG(CASE WHEN status = 'completed' THEN price ELSE NULL END) as avg_earnings,
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_jobs
     FROM jobs 
     WHERE laborer_id = ?
@@ -33,7 +42,11 @@ $stmt = $conn->prepare("
     SELECT 
         DATE_FORMAT(created_at, '%Y-%m') as month,
         COUNT(*) as total_jobs,
+<<<<<<< HEAD
         SUM(budget) as monthly_earnings
+=======
+        SUM(price) as monthly_earnings
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     FROM jobs 
     WHERE laborer_id = ? AND status = 'completed'
     GROUP BY DATE_FORMAT(created_at, '%Y-%m')

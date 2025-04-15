@@ -9,11 +9,15 @@ if (!isLoggedIn() || !isCustomer()) {
 
 // Get user data
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT NULL AS profile_pic, 
                               CONCAT(first_name, ' ', last_name) AS name, 
                               email, phone, id, role
                        FROM users 
                        WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT profile_pic FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();

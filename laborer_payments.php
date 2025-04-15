@@ -23,9 +23,14 @@ $payment_summary = $stmt->get_result()->fetch_assoc();
 
 // Get payment history
 $stmt = $conn->prepare("
+<<<<<<< HEAD
     SELECT p.id, p.amount, p.transaction_id, p.status, p.created_at,
            j.title AS job_title, j.id AS job_id,
            CONCAT(u.first_name, ' ', u.last_name) AS customer_name
+=======
+    SELECT p.*, j.title as job_title, u.name as employer_name,
+           DATE_FORMAT(p.created_at, '%b %d, %Y') as payment_date
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     FROM payments p
     JOIN jobs j ON p.job_id = j.id
     JOIN users u ON j.customer_id = u.id
@@ -114,9 +119,15 @@ $payments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 <tbody>
                     <?php foreach ($payments as $payment): ?>
                     <tr>
+<<<<<<< HEAD
                         <td><?php echo $payment['created_at']; ?></td>
                         <td><?php echo htmlspecialchars($payment['job_title']); ?></td>
                         <td><?php echo htmlspecialchars($payment['customer_name']); ?></td>
+=======
+                        <td><?php echo $payment['payment_date']; ?></td>
+                        <td><?php echo htmlspecialchars($payment['job_title']); ?></td>
+                        <td><?php echo htmlspecialchars($payment['employer_name']); ?></td>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                         <td>Rs.<?php echo number_format($payment['amount'], 2); ?></td>
                         <td class="<?php echo $payment['status']; ?>"><?php echo ucfirst($payment['status']); ?></td>
                     </tr>

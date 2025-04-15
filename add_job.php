@@ -12,7 +12,11 @@ $success = false;
 
 // Get all customers
 $customers = [];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT id, CONCAT(first_name, ' ', last_name) AS full_name, email FROM users WHERE role = 'customer'");
+=======
+$stmt = $conn->prepare("SELECT id, name, email FROM users WHERE role = 'customer'");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
@@ -21,7 +25,11 @@ while ($row = $result->fetch_assoc()) {
 
 // Get all laborers
 $laborers = [];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT id, CONCAT(first_name, ' ', last_name) AS full_name, email FROM users WHERE role = 'laborer'");
+=======
+$stmt = $conn->prepare("SELECT id, name, email FROM users WHERE role = 'laborer'");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
@@ -42,21 +50,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = sanitize_input($_POST['description']);
     $customer_id = (int)$_POST['customer_id'];
     $laborer_id = !empty($_POST['laborer_id']) ? (int)$_POST['laborer_id'] : null;
+<<<<<<< HEAD
     $service_id = !empty($_POST['service_id']) ? (int)$_POST['service_id'] : null;
     $location = sanitize_input($_POST['location']);
     $budget = (float)$_POST['price'];
+=======
+    $price = (float)$_POST['price'];
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     $status = sanitize_input($_POST['status']);
 
     // Validate input
     if (empty($title)) $errors[] = "Title is required";
     if (empty($description)) $errors[] = "Description is required";
     if (empty($customer_id)) $errors[] = "Customer is required";
+<<<<<<< HEAD
     if (empty($budget)) $errors[] = "Budget is required";
 
     if (empty($errors)) {
         $stmt = $conn->prepare("INSERT INTO jobs (title, description, customer_id, laborer_id, service_id, location, budget, status) 
                                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssiissds", $title, $description, $customer_id, $laborer_id, $service_id, $location, $budget, $status);
+=======
+    if (empty($price)) $errors[] = "Price is required";
+
+    if (empty($errors)) {
+        $stmt = $conn->prepare("INSERT INTO jobs (title, description, customer_id, laborer_id, status, price) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssiids", $title, $description, $customer_id, $laborer_id, $status, $price);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         
         if ($stmt->execute()) {
             $success = true;
@@ -113,7 +133,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <option value="">Select Customer</option>
                         <?php foreach ($customers as $customer): ?>
                             <option value="<?php echo $customer['id']; ?>">
+<<<<<<< HEAD
                                 <?php echo $customer['full_name'] . ' (' . $customer['email'] . ')'; ?>
+=======
+                                <?php echo $customer['name'] . ' (' . $customer['email'] . ')'; ?>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -125,7 +149,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <option value="">Select Laborer</option>
                         <?php foreach ($laborers as $laborer): ?>
                             <option value="<?php echo $laborer['id']; ?>">
+<<<<<<< HEAD
                                 <?php echo $laborer['full_name'] . ' (' . $laborer['email'] . ')'; ?>
+=======
+                                <?php echo $laborer['name'] . ' (' . $laborer['email'] . ')'; ?>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -144,12 +172,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <div class="form-group">
+<<<<<<< HEAD
                     <label for="location">Location:</label>
                     <input type="text" id="location" name="location" required>
                 </div>
 
                 <div class="form-group">
                     <label for="price">Budget ($):</label>
+=======
+                    <label for="price">Price ($):</label>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                     <input type="number" id="price" name="price" step="0.01" min="0" required>
                 </div>
 

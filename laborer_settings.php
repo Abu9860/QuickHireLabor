@@ -6,6 +6,7 @@ if (!isLoggedIn() || !isLaborer()) {
     exit();
 }
 
+<<<<<<< HEAD
 // Check if laborer_settings table exists
 $tableExists = $conn->query("SHOW TABLES LIKE 'laborer_settings'")->num_rows > 0;
 
@@ -30,6 +31,12 @@ if (!$tableExists) {
         error_log("Error creating laborer_settings table: " . $conn->error);
     }
 }
+=======
+// Create tables if they don't exist
+$sql = file_get_contents('database/create_laborer_settings.sql');
+$conn->multi_query($sql);
+while ($conn->more_results() && $conn->next_result()); // Clear multi_query results
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 
 $user_id = $_SESSION['user_id'];
 

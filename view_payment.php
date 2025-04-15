@@ -15,10 +15,17 @@ $sql = "SELECT p.*,
         j.title as job_title, 
         j.description as job_description,
         j.status as job_status,
+<<<<<<< HEAD
         c.first_name as customer_name,
         c.email as customer_email,
         c.phone as customer_phone,
         l.first_name as laborer_name,
+=======
+        c.name as customer_name,
+        c.email as customer_email,
+        c.phone as customer_phone,
+        l.name as laborer_name,
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         l.email as laborer_email,
         l.phone as laborer_phone
         FROM payments p
@@ -67,7 +74,11 @@ $payment = $result->fetch_assoc();
                     </div>
                     <div class="detail-item">
                         <label>Amount:</label>
+<<<<<<< HEAD
                         <span>₹<?php echo number_format($payment['amount'], 2); ?></span>
+=======
+                        <span>$<?php echo number_format($payment['amount'], 2); ?></span>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                     </div>
                     <div class="detail-item">
                         <label>Status:</label>

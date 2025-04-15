@@ -75,10 +75,19 @@ $pending_reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
 // Get ratings data
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT r.*, j.title AS job_title, j.description AS job_description 
                         FROM ratings r 
                         JOIN jobs j ON r.job_id = j.id 
                         WHERE j.customer_id = ?");
+=======
+$stmt = $conn->prepare("SELECT r.*, j.title as job_title, CONCAT(u.first_name, ' ', u.last_name) AS laborer_name 
+                       FROM ratings r 
+                       JOIN jobs j ON r.job_id = j.id 
+                       JOIN users u ON r.laborer_id = u.id 
+                       WHERE r.customer_id = ? 
+                       ORDER BY r.created_at DESC");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $ratings = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);

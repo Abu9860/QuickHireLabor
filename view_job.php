@@ -11,10 +11,17 @@ $job_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 // Get job details with related information
 $sql = "SELECT j.*, 
+<<<<<<< HEAD
         CONCAT(c.first_name, ' ', c.last_name) AS customer_name, c.email AS customer_email, c.phone AS customer_phone,
         CONCAT(l.first_name, ' ', l.last_name) AS laborer_name, l.email AS laborer_email, l.phone AS laborer_phone,
         p.status AS payment_status, p.amount AS payment_amount, p.created_at AS payment_date,
         r.rating, r.comment /* Changed from r.feedback to r.comment */
+=======
+        c.name as customer_name, c.email as customer_email, c.phone as customer_phone,
+        l.name as laborer_name, l.email as laborer_email, l.phone as laborer_phone,
+        p.status as payment_status, p.amount as payment_amount, p.created_at as payment_date,
+        r.rating, r.feedback
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         FROM jobs j
         JOIN users c ON j.customer_id = c.id
         LEFT JOIN users l ON j.laborer_id = l.id
@@ -66,7 +73,11 @@ $job = $result->fetch_assoc();
                     </div>
                     <div class="detail-item">
                         <label>Price:</label>
+<<<<<<< HEAD
                         <span>₹<?php echo isset($job['price']) ? number_format($job['price'], 2) : number_format($job['budget'], 2); ?></span>
+=======
+                        <span>$<?php echo number_format($job['price'], 2); ?></span>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                     </div>
                     <div class="detail-item">
                         <label>Status:</label>
@@ -157,7 +168,11 @@ $job = $result->fetch_assoc();
                     </div>
                     <div class="detail-item">
                         <label>Feedback:</label>
+<<<<<<< HEAD
                         <span><?php echo htmlspecialchars($job['comment']); ?></span>
+=======
+                        <span><?php echo htmlspecialchars($job['feedback']); ?></span>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                     </div>
                 </div>
             </div>

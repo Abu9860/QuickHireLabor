@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'laborer') {
     exit();
 }
 
+<<<<<<< HEAD
 // Handle job application submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['job_id'])) {
     $job_id = $_POST['job_id'];
@@ -33,17 +34,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['job_id'])) {
         $_SESSION['success'] = "Your application has been submitted successfully!";
     } else {
         $_SESSION['error'] = "Error submitting application.";
+=======
+// Handle job application
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['job_id'])) {
+    $job_id = $_POST['job_id'];
+    $laborer_id = $_SESSION['user_id'];
+    
+    $stmt = $conn->prepare("UPDATE jobs SET laborer_id = ?, status = 'assigned' WHERE id = ? AND status = 'pending'");
+    $stmt->bind_param("ii", $laborer_id, $job_id);
+    
+    if ($stmt->execute()) {
+        $_SESSION['success'] = "Successfully applied for the job!";
+    } else {
+        $_SESSION['error'] = "Error applying for the job.";
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     }
     
     header("Location: laborer_jobs.php");
     exit();
 }
 
+<<<<<<< HEAD
 // Get available jobs with broader criteria - keep the permissive query but remove debugging
+=======
+// Get available jobs
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $search = $_GET['search'] ?? '';
 $skill = $_GET['skill'] ?? '';
 $location = $_GET['location'] ?? '';
 
+<<<<<<< HEAD
 // Make query even more permissive by removing the WHERE clause entirely
 $query = "
     SELECT j.*, 
@@ -85,6 +105,43 @@ if ($hasSkillsTable) {
     // Fallback - either set some default skills or skip this part
     $skills = ['Carpentry', 'Plumbing', 'Electrical', 'Painting', 'Cleaning']; // Default set
 }
+=======
+$query = "SELECT * FROM jobs WHERE status = 'pending'";
+$params = [];
+$types = "";
+
+if ($search) {
+    $query .= " AND (title LIKE ? OR description LIKE ?)";
+    $search = "%$search%";
+    $params[] = $search;
+    $params[] = $search;
+    $types .= "ss";
+}
+
+if ($skill) {
+    $query .= " AND required_skills LIKE ?";
+    $skill = "%$skill%";
+    $params[] = $skill;
+    $types .= "s";
+}
+
+if ($location) {
+    $query .= " AND location = ?";
+    $params[] = $location;
+    $types .= "s";
+}
+
+$stmt = $conn->prepare($query);
+if (!empty($params)) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$jobs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+// Get distinct locations and skills for filters
+$locations = $conn->query("SELECT DISTINCT location FROM jobs WHERE location IS NOT NULL")->fetch_all(MYSQLI_ASSOC);
+$skills = $conn->query("SELECT DISTINCT name FROM skills")->fetch_all(MYSQLI_ASSOC);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -132,6 +189,7 @@ if ($hasSkillsTable) {
             border-radius: 4px;
             cursor: pointer;
         }
+<<<<<<< HEAD
         .submit-application-btn {
             background: #4CAF50;
             color: white;
@@ -216,6 +274,8 @@ if ($hasSkillsTable) {
             width: 100%;
             margin-top: 15px;
         }
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     </style>
 </head>
 <body>
@@ -236,7 +296,11 @@ if ($hasSkillsTable) {
                 <select name="skill">
                     <option value="">Filter by Skill</option>
                     <?php foreach ($skills as $skill): ?>
+<<<<<<< HEAD
                         <option value="<?php echo htmlspecialchars($skill); ?>"><?php echo htmlspecialchars($skill); ?></option>
+=======
+                        <option value="<?php echo htmlspecialchars($skill['name']); ?>"><?php echo htmlspecialchars($skill['name']); ?></option>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                     <?php endforeach; ?>
                 </select>
 
@@ -257,6 +321,7 @@ if ($hasSkillsTable) {
             <div class="job-card">
                 <h3><?php echo htmlspecialchars($job['title']); ?></h3>
                 <p><strong>Location:</strong> <?php echo htmlspecialchars($job['location']); ?></p>
+<<<<<<< HEAD
                 <p><strong>Pay:</strong> Rs.<?php echo number_format(isset($job['price']) ? $job['price'] : ($job['budget'] ?? 0), 2); ?></p>
                 <p><?php echo htmlspecialchars($job['description']); ?></p>
                 
@@ -309,5 +374,21 @@ if ($hasSkillsTable) {
         }
     }
     </script>
+=======
+                <p><strong>Pay:</strong> Rs.<?php echo number_format($job['price'], 2); ?></p>
+                <p><?php echo htmlspecialchars($job['description']); ?></p>
+                <form method="POST" action="">
+                    <input type="hidden" name="job_id" value="<?php echo $job['id']; ?>">
+                    <button type="submit" class="apply-btn">Apply Now</button>
+                </form>
+            </div>
+            <?php endforeach; ?>
+            
+            <?php if (empty($jobs)): ?>
+            <p>No jobs found matching your criteria.</p>
+            <?php endif; ?>
+        </div>
+    </main>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 </body>
 </html>

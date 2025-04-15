@@ -14,8 +14,12 @@ $response = ['success' => false, 'message' => ''];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
         $first_name = sanitize_input($_POST['firstName']);
         $last_name = sanitize_input($_POST['lastName']);
+=======
+        $name = sanitize_input($_POST['fullName']);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         $phone = sanitize_input($_POST['phone']);
         $address = sanitize_input($_POST['address']);
         $skills = isset($_POST['skills']) ? $_POST['skills'] : [];
@@ -24,8 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->begin_transaction();
         
         // Update user info
+<<<<<<< HEAD
         $stmt = $conn->prepare("UPDATE users SET first_name = ?, last_name = ?, phone = ?, address = ? WHERE id = ?");
         $stmt->bind_param("sssii", $first_name, $last_name, $phone, $address, $user_id);
+=======
+        $stmt = $conn->prepare("UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $name, $phone, $address, $user_id);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         
         if (!$stmt->execute()) {
             throw new Exception('Failed to update profile');
@@ -61,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Get user data
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT first_name, last_name, email, phone FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -102,6 +112,23 @@ if ($hasSkillsTable) {
         ['skill_name' => 'Handyman', 'experience' => 'Intermediate']
     ];
 }
+=======
+$stmt = $conn->prepare("SELECT name, email, phone, address FROM users WHERE id = ?");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+
+// Get all available skills and laborer's current skills
+$stmt = $conn->prepare("
+    SELECT s.*, IF(ls.laborer_id IS NOT NULL, 1, 0) as is_selected
+    FROM skills s
+    LEFT JOIN laborer_skills ls ON s.id = ls.skill_id AND ls.laborer_id = ?
+    ORDER BY s.name
+");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$skills = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 ?>
 
 <!DOCTYPE html>
@@ -193,6 +220,7 @@ if ($hasSkillsTable) {
 
         <form class="profile-form" method="POST" action="" enctype="multipart/form-data">
             <div class="form-group">
+<<<<<<< HEAD
                 <label for="firstName">First Name:</label>
                 <input type="text" id="firstName" name="firstName" 
                        value="<?php echo htmlspecialchars($firstName); ?>" required>
@@ -202,28 +230,46 @@ if ($hasSkillsTable) {
                 <label for="lastName">Last Name:</label>
                 <input type="text" id="lastName" name="lastName" 
                        value="<?php echo htmlspecialchars($lastName); ?>" required>
+=======
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="fullName" 
+                       value="<?php echo htmlspecialchars($user['name']); ?>" required>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             </div>
 
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" 
+<<<<<<< HEAD
                        value="<?php echo htmlspecialchars($email); ?>" required readonly>
+=======
+                       value="<?php echo htmlspecialchars($user['email']); ?>" required readonly>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             </div>
 
             <div class="form-group">
                 <label for="phone">Phone:</label>
                 <input type="tel" id="phone" name="phone" 
+<<<<<<< HEAD
                        value="<?php echo htmlspecialchars($phone); ?>" required>
+=======
+                       value="<?php echo htmlspecialchars($user['phone']); ?>" required>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             </div>
 
             <div class="form-group">
                 <label for="address">Address:</label>
                 <input type="text" id="address" name="address" 
+<<<<<<< HEAD
                        value="<?php echo htmlspecialchars(isset($user['address']) ? $user['address'] : ''); ?>">
+=======
+                       value="<?php echo htmlspecialchars($user['address']); ?>">
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             </div>
 
             <div class="form-group">
                 <label for="skills">Skills:</label>
+<<<<<<< HEAD
                 <?php if (isset($skills) && !empty($skills)): ?>
                     <select id="skills" name="skills[]" multiple>
                         <?php foreach ($skills as $skill): ?>
@@ -236,6 +282,17 @@ if ($hasSkillsTable) {
                 <?php else: ?>
                     <p>No skills listed yet.</p>
                 <?php endif; ?>
+=======
+                <select id="skills" name="skills[]" multiple>
+                    <?php foreach ($skills as $skill): 
+                        $selected = $skill['is_selected'] ? 'selected' : '';
+                    ?>
+                        <option value="<?php echo htmlspecialchars($skill['id']); ?>" <?php echo $selected; ?>>
+                            <?php echo htmlspecialchars($skill['name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             </div>
 
             <button type="submit" class="btn-save">Save Changes</button>

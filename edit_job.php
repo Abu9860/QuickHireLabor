@@ -27,6 +27,7 @@ if ($result->num_rows === 0) {
 
 $job = $result->fetch_assoc();
 
+<<<<<<< HEAD
 // Ensure 'budget' key exists in the array
 if (isset($job) && is_array($job)) {
     if (!isset($job['budget'])) {
@@ -48,6 +49,11 @@ $job = array_merge($defaults, $job);
 // Get all customers and laborers
 $customers = [];
 $stmt = $conn->prepare("SELECT id, first_name, email FROM users WHERE role = 'customer'");
+=======
+// Get all customers and laborers
+$customers = [];
+$stmt = $conn->prepare("SELECT id, name, email FROM users WHERE role = 'customer'");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
@@ -55,7 +61,11 @@ while ($row = $result->fetch_assoc()) {
 }
 
 $laborers = [];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT id, first_name, email FROM users WHERE role = 'laborer'");
+=======
+$stmt = $conn->prepare("SELECT id, name, email FROM users WHERE role = 'laborer'");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
@@ -68,8 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = sanitize_input($_POST['description']);
     $customer_id = (int)$_POST['customer_id'];
     $laborer_id = !empty($_POST['laborer_id']) ? (int)$_POST['laborer_id'] : null;
+<<<<<<< HEAD
     // Fix the undefined budget key - use 'price' instead which is the field name in the form
     $price = !empty($_POST['price']) ? (float)$_POST['price'] : 0;
+=======
+    $price = (float)$_POST['price'];
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     $status = sanitize_input($_POST['status']);
 
     // Validate input
@@ -79,8 +93,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($price)) $errors[] = "Price is required";
 
     if (empty($errors)) {
+<<<<<<< HEAD
         // Fix the column name - use 'budget' instead of 'price' to match the database column
         $stmt = $conn->prepare("UPDATE jobs SET title = ?, description = ?, customer_id = ?, laborer_id = ?, status = ?, budget = ? WHERE id = ?");
+=======
+        $stmt = $conn->prepare("UPDATE jobs SET title = ?, description = ?, customer_id = ?, laborer_id = ?, status = ?, price = ? WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         $stmt->bind_param("ssiisdi", $title, $description, $customer_id, $laborer_id, $status, $price, $job_id);
         
         if ($stmt->execute()) {
@@ -90,7 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bind_param("i", $job_id);
             $stmt->execute();
             $job = $stmt->get_result()->fetch_assoc();
+<<<<<<< HEAD
             $job = array_merge($defaults, $job);
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         } else {
             $errors[] = "Error updating job: " . $stmt->error;
         }
@@ -146,7 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <option value="">Select Customer</option>
                         <?php foreach ($customers as $customer): ?>
                             <option value="<?php echo $customer['id']; ?>" <?php echo $customer['id'] == $job['customer_id'] ? 'selected' : ''; ?>>
+<<<<<<< HEAD
                                 <?php echo $customer['first_name'] . ' (' . $customer['email'] . ')'; ?>
+=======
+                                <?php echo $customer['name'] . ' (' . $customer['email'] . ')'; ?>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -158,7 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <option value="">Select Laborer</option>
                         <?php foreach ($laborers as $laborer): ?>
                             <option value="<?php echo $laborer['id']; ?>" <?php echo $laborer['id'] == $job['laborer_id'] ? 'selected' : ''; ?>>
+<<<<<<< HEAD
                                 <?php echo $laborer['first_name'] . ' (' . $laborer['email'] . ')'; ?>
+=======
+                                <?php echo $laborer['name'] . ' (' . $laborer['email'] . ')'; ?>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -166,7 +195,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 <div class="form-group">
                     <label for="price">Price ($):</label>
+<<<<<<< HEAD
                     <input type="number" id="price" name="price" step="0.01" min="0" value="<?php echo isset($job['budget']) ? $job['budget'] : ''; ?>" required>
+=======
+                    <input type="number" id="price" name="price" step="0.01" min="0" value="<?php echo $job['price']; ?>" required>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                 </div>
 
                 <div class="form-group">

@@ -8,11 +8,15 @@ if (!isLoggedIn() || !isCustomer()) {
 
 // Get user data
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT NULL AS profile_pic, 
                               CONCAT(first_name, ' ', last_name) AS name, 
                               email, phone, id, role
                        FROM users 
                        WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT profile_pic FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -140,6 +144,7 @@ $payment_stats = $stmt->get_result()->fetch_assoc();
 
 // Get pending payments with additional details
 $stmt = $conn->prepare("
+<<<<<<< HEAD
  SELECT j.id as job_id, j.title, j.status,
         l.id as laborer_id, 
         CONCAT(l.first_name, ' ', l.last_name) as laborer_name,
@@ -150,6 +155,24 @@ $stmt = $conn->prepare("
  JOIN users l ON j.laborer_id = l.id
  WHERE j.customer_id = ? AND j.status = 'completed'
  ORDER BY j.created_at DESC
+=======
+    SELECT j.*, 
+           CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, 
+           u.phone as laborer_phone,
+           u.profile_pic as laborer_pic,
+           u.address as laborer_address,
+           COUNT(DISTINCT r.id) as total_ratings,
+           COALESCE(AVG(r.rating), 0) as avg_rating,
+           p.status as payment_status
+    FROM jobs j 
+    JOIN users u ON j.laborer_id = u.id 
+    LEFT JOIN ratings r ON u.id = r.laborer_id
+    LEFT JOIN payments p ON j.id = p.job_id
+    WHERE j.customer_id = ? AND j.status IN ('assigned', 'completed') 
+    AND (p.id IS NULL OR p.status = 'pending')
+    GROUP BY j.id
+    ORDER BY j.created_at DESC
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 ");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -158,7 +181,11 @@ $pending_payments = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 // Get payment history with detailed information
 $stmt = $conn->prepare("
     SELECT p.*, j.title as job_title, j.description,
+<<<<<<< HEAD
            CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, NULL as profile_pic, /* Use NULL instead of u.profile_pic */
+=======
+           CONCAT(u.first_name, ' ', u.last_name) AS laborer_name, u.profile_pic as laborer_pic,
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
            u.phone as laborer_phone, u.email as laborer_email
     FROM payments p 
     JOIN jobs j ON p.job_id = j.id 
@@ -313,11 +340,19 @@ foreach ($payment_history as $payment) {
                         </div>
                         <div class="payment-details">
                             <p><strong>Laborer:</strong> <?php echo htmlspecialchars($payment['laborer_name']); ?></p>
+<<<<<<< HEAD
                             <p><strong>Phone:</strong> <?php echo isset($payment['laborer_phone']) ? htmlspecialchars($payment['laborer_phone']) : 'Not available'; ?></p>
                             <p><strong>Date:</strong> <?php echo date('M j, Y', strtotime($payment['created_at'])); ?></p>
                         </div>
                         <button class="btn btn-primary pay-btn" data-job-id="<?php echo $payment['job_id']; ?>" data-amount="<?php echo isset($payment['price']) ? $payment['price'] : 0; ?>">
                             Pay Now (₹<?php echo number_format(isset($payment['price']) ? $payment['price'] : 0, 2); ?>)
+=======
+                            <p><strong>Phone:</strong> <?php echo htmlspecialchars($payment['laborer_phone']); ?></p>
+                            <p><strong>Date:</strong> <?php echo date('M j, Y', strtotime($payment['created_at'])); ?></p>
+                        </div>
+                        <button class="pay-btn" onclick="processPayment(<?php echo $payment['id']; ?>, <?php echo $payment['price']; ?>)">
+                            Pay Now
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                         </button>
                     </div>
                 <?php endforeach; ?>

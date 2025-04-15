@@ -9,13 +9,18 @@ if (!isLoggedIn() || !isLaborer()) {
 
 // Get user data - only get name, remove profile_pic
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT CONCAT(first_name, ' ', last_name) AS name FROM users WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT name FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
 // Get recent jobs
 $stmt = $conn->prepare("
+<<<<<<< HEAD
     SELECT 
         j.id, j.title, j.description, j.location, j.budget, j.status,
         CONCAT(u.first_name, ' ', u.last_name) AS customer_name,
@@ -28,6 +33,15 @@ $stmt = $conn->prepare("
     ORDER BY j.created_at DESC
     LIMIT 5
 ");
+=======
+    SELECT j.*, u.name as customer_name 
+    FROM jobs j 
+    LEFT JOIN users u ON j.customer_id = u.id 
+    WHERE j.laborer_id = ? 
+    ORDER BY j.created_at DESC LIMIT 5
+");
+$stmt->bind_param("i", $user_id);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->execute();
 $recent_jobs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -35,7 +49,11 @@ $recent_jobs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 $stmt = $conn->prepare("
     SELECT 
         COUNT(*) as total_jobs,
+<<<<<<< HEAD
         SUM(CASE WHEN status = 'completed' THEN budget ELSE 0 END) as total_earnings,
+=======
+        SUM(CASE WHEN status = 'completed' THEN price ELSE 0 END) as total_earnings,
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         AVG(rating) as avg_rating
     FROM jobs j
     LEFT JOIN ratings r ON j.id = r.job_id
@@ -112,7 +130,11 @@ $stats = $stmt->get_result()->fetch_assoc();
 
     <div class="container">
         <div class="welcome-banner">
+<<<<<<< HEAD
             <h1>Welcome, <?php echo isset($user['name']) ? htmlspecialchars($user['name']) : 'Laborer'; ?>!</h1>
+=======
+            <h1>Welcome, <?php echo htmlspecialchars($user['name']); ?>!</h1>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             <p>Here's your activity overview</p>
         </div>
 
@@ -141,7 +163,11 @@ $stats = $stmt->get_result()->fetch_assoc();
                         <h3><?php echo htmlspecialchars($job['title']); ?></h3>
                         <p>Customer: <?php echo htmlspecialchars($job['customer_name']); ?></p>
                         <p>Status: <strong><?php echo ucfirst($job['status']); ?></strong></p>
+<<<<<<< HEAD
                         <p>Price: ₹<?php echo number_format($job['budget'], 2); ?></p>
+=======
+                        <p>Price: ₹<?php echo number_format($job['price'], 2); ?></p>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                         <small>Posted: <?php echo date('M j, Y', strtotime($job['created_at'])); ?></small>
                     </div>
                 <?php endforeach; ?>

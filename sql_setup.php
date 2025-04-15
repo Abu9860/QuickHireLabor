@@ -92,6 +92,7 @@ $tables = [
         FOREIGN KEY (laborer_id) REFERENCES users(id)
     )",
     
+<<<<<<< HEAD
     // Job Applications Table
     "CREATE TABLE IF NOT EXISTS job_applications (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -107,6 +108,8 @@ $tables = [
         UNIQUE KEY `unique_application` (`job_id`, `laborer_id`)
     )",
     
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     // Notifications Table
     "CREATE TABLE IF NOT EXISTS notifications (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -179,6 +182,7 @@ $tables = [
         PRIMARY KEY (`id`),
         UNIQUE KEY `user_id` (`user_id`),
         FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+<<<<<<< HEAD
     )",
     
     // Ratings Table
@@ -193,6 +197,8 @@ $tables = [
         FOREIGN KEY (job_id) REFERENCES jobs(id),
         FOREIGN KEY (rater_id) REFERENCES users(id),
         FOREIGN KEY (ratee_id) REFERENCES users(id)
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     )"
 ];
 
@@ -219,6 +225,7 @@ foreach ($tables as $sql) {
 
 echo "</ul>";
 
+<<<<<<< HEAD
 // Function to check if a table exists
 function tableExists($conn, $tableName) {
     $result = $conn->query("SHOW TABLES LIKE '$tableName'");
@@ -291,6 +298,8 @@ function insertDemoData($conn, $tableName, $demoData, $columns) {
     return $results;
 }
 
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 // Insert default data
 if ($success) {
     echo "<h2>Inserting Default Data</h2>";
@@ -304,6 +313,7 @@ if ($success) {
             $columns[] = $row['Field'];
         }
         echo "<li>ℹ️ Found users table with columns: " . implode(", ", $columns) . "</li>";
+<<<<<<< HEAD
         
         // Verify if the required name columns exist
         if (!in_array('first_name', $columns)) {
@@ -312,6 +322,8 @@ if ($success) {
         if (!in_array('last_name', $columns)) {
             echo "<li>⚠️ Warning: 'last_name' column not found in users table</li>";
         }
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     }
 
     // Default admin user - adjusted to handle different column names
@@ -320,6 +332,7 @@ if ($success) {
     if ($adminExists && $adminExists->num_rows == 0) {
         $admin_password = password_hash('admin123', PASSWORD_DEFAULT);
         
+<<<<<<< HEAD
         // Always use first_name and last_name for consistency
         $sql = "INSERT INTO users (first_name, last_name, email, phone, password, role) 
                 VALUES ('Admin', 'User', 'admin@quickhirelabor.com', '1234567890', '$admin_password', 'admin')";
@@ -334,6 +347,31 @@ if ($success) {
             echo "<li>❌ Error creating admin user: " . $e->getMessage() . "</li>";
             echo "<li>Debug: SQL used was: " . $sql . "</li>";
             $errors[] = "Error creating admin user: " . $e->getMessage();
+=======
+        // Determine if we should use 'name' or separate first/last name fields
+        if (in_array('first_name', $columns) && in_array('last_name', $columns)) {
+            $sql = "INSERT INTO users (first_name, last_name, email, phone, password, role) 
+                    VALUES ('Admin', 'User', 'admin@quickhirelabor.com', '1234567890', '$admin_password', 'admin')";
+        } else if (in_array('username', $columns)) {
+            $sql = "INSERT INTO users (username, email, phone, password, role) 
+                    VALUES ('admin', 'admin@quickhirelabor.com', '1234567890', '$admin_password', 'admin')";
+        } else {
+            echo "<li>❌ Cannot determine correct column structure for users table</li>";
+            $adminInserted = false;
+        }
+        if (isset($sql)) {
+            try {
+                if ($conn->query($sql) === TRUE) {
+                    echo "<li>✅ Default admin user created</li>";
+                } else {
+                    throw new Exception($conn->error);
+                }
+            } catch (Exception $e) {
+                echo "<li>❌ Error creating admin user: " . $e->getMessage() . "</li>";
+                echo "<li>Debug: SQL used was: " . $sql . "</li>";
+                $errors[] = "Error creating admin user: " . $e->getMessage();
+            }
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         }
     } else {
         echo "<li>ℹ️ Admin user already exists or couldn't check</li>";
@@ -374,6 +412,7 @@ if ($success) {
     echo "</ul>";
 }
 
+<<<<<<< HEAD
 // Database migration section is removed since it's not needed
 
 // Add demo data for Payments
@@ -599,6 +638,129 @@ if (tableExists($conn, 'ratings') && !tableHasData($conn, 'ratings')) {
         echo "<li>❌ Cannot add rating demo data: missing job or user data</li>";
     }
     
+=======
+// Data migration section
+echo "<h2>Data Migration</h2>";
+echo "<ul>";
+
+$migration_path = __DIR__ . '/database/migrations';
+if (is_dir($migration_path)) {
+    // Process each CSV file in the migrations directory
+    $files = glob($migration_path . '/*.csv');
+    
+    foreach ($files as $file) {
+        $table_name = basename($file, '.csv');
+        echo "<li>Found migration file for table '{$table_name}'</li>";
+        
+        // Check if the table exists
+        $table_exists = $conn->query("SHOW TABLES LIKE '{$table_name}'")->num_rows > 0;
+        
+        if ($table_exists) {
+            // Read CSV file
+            if (($handle = fopen($file, "r")) !== FALSE) {
+                $headers = fgetcsv($handle, 0, ","); // Get column names
+                $row_count = 0;
+                
+                // Prepare SQL for insertion
+                $columns = implode("`, `", $headers);
+                $placeholders = implode(", ", array_fill(0, count($headers), "?"));
+                $sql = "INSERT INTO `{$table_name}` (`{$columns}`) VALUES ({$placeholders})";
+                
+                try {
+                    $stmt = $conn->prepare($sql);
+                    
+                    // Process each row in the CSV
+                    while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+                        if (count($data) != count($headers)) continue; // Skip invalid rows
+                        
+                        // Bind parameters
+                        $types = str_repeat("s", count($data)); // Assume all strings
+                        $stmt->bind_param($types, ...$data);
+                        
+                        if ($stmt->execute()) {
+                            $row_count++;
+                        }
+                    }
+                    echo "<li>✅ Imported {$row_count} rows into '{$table_name}'</li>";
+                } catch (Exception $e) {
+                    echo "<li>❌ Error importing data to '{$table_name}': " . $e->getMessage() . "</li>";
+                }
+                
+                fclose($handle);
+            } else {
+                echo "<li>❌ Could not open file: {$file}</li>";
+            }
+        } else {
+            echo "<li>⚠️ Table '{$table_name}' does not exist, skipping import</li>";
+        }
+    }
+} else {
+    echo "<li>ℹ️ No migration directory found at {$migration_path}</li>";
+}
+
+echo "</ul>";
+
+// Sample user data - Create test accounts for development
+if ($success && isset($_GET['with_sample_data']) && $_GET['with_sample_data'] == 1) {
+    echo "<h2>Creating Sample User Accounts</h2>";
+    echo "<ul>";
+    
+    // Sample customer and laborer accounts
+    $sample_users = [
+        ['Customer One', 'customer1@example.com', '1234567890', 'password123', 'customer'],
+        ['Customer Two', 'customer2@example.com', '2345678901', 'password123', 'customer'],
+        ['Laborer One', 'laborer1@example.com', '3456789012', 'password123', 'laborer'],
+        ['Laborer Two', 'laborer2@example.com', '4567890123', 'password123', 'laborer']
+    ];
+    
+    foreach ($sample_users as $user) {
+        $name = $user[0];
+        $email = $user[1];
+        $mobile = $user[2];
+        $password = password_hash($user[3], PASSWORD_DEFAULT);
+        $role = $user[4];
+        
+        // Check if email already exists
+        $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $check->bind_param("s", $email);
+        $check->execute();
+        if ($check->get_result()->num_rows == 0) {
+            // Split name into first_name and last_name
+            $name_parts = explode(' ', $name, 2);
+            $first_name = $name_parts[0];
+            $last_name = isset($name_parts[1]) ? $name_parts[1] : '';
+            
+            $stmt = $conn->prepare("INSERT INTO users (first_name, last_name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssss", $first_name, $last_name, $email, $mobile, $password, $role);
+            if ($stmt->execute()) {
+                echo "<li>✅ Created sample user: {$name} ({$role})</li>";
+                
+                // For laborers, create settings entry
+                if ($role == 'laborer') {
+                    $user_id = $stmt->insert_id;
+                    
+                    // Create laborer settings
+                    $settings = $conn->prepare("INSERT INTO laborer_settings (user_id) VALUES (?)");
+                    $settings->bind_param("i", $user_id);
+                    if ($settings->execute()) {
+                        echo "<li>✅ Created laborer settings for: {$name}</li>";
+                    }
+                    
+                    // Create notification preferences
+                    $prefs = $conn->prepare("INSERT INTO notification_preferences (user_id) VALUES (?)");
+                    $prefs->bind_param("i", $user_id);
+                    if ($prefs->execute()) {
+                        echo "<li>✅ Created notification preferences for: {$name}</li>";
+                    }
+                }
+            } else {
+                echo "<li>❌ Error creating sample user {$name}: " . $stmt->error . "</li>";
+            }
+        } else {
+            echo "<li>ℹ️ Sample user {$name} already exists</li>";
+        }
+    }
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     echo "</ul>";
 }
 
@@ -621,7 +783,11 @@ if (empty($errors)) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+<<<<<<< HEAD
     <meta name="viewport" width="device-width, initial-scale=1.0">
+=======
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     <title>QuickHire Labor - Database Setup</title>
     <style>
         body {

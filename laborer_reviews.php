@@ -8,6 +8,7 @@ if (!isLoggedIn() || !isLaborer()) {
 
 $user_id = $_SESSION['user_id'];
 $stmt = $conn->prepare("
+<<<<<<< HEAD
     SELECT r.id, r.job_id, r.rating, r.comment, r.created_at,
            j.title AS job_title,
            CONCAT(u.first_name, ' ', u.last_name) AS customer_name
@@ -15,6 +16,13 @@ $stmt = $conn->prepare("
     JOIN jobs j ON r.job_id = j.id
     JOIN users u ON r.rater_id = u.id
     WHERE r.ratee_id = ?
+=======
+    SELECT r.*, j.title as job_title, u.name as customer_name
+    FROM ratings r 
+    JOIN jobs j ON r.job_id = j.id
+    JOIN users u ON r.customer_id = u.id
+    WHERE r.laborer_id = ?
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     ORDER BY r.created_at DESC
 ");
 $stmt->bind_param("i", $user_id);

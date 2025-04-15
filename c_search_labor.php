@@ -9,11 +9,15 @@ if (!isLoggedIn() || !isCustomer()) {
 
 // Get user data for profile picture
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT NULL AS profile_pic, 
                               CONCAT(first_name, ' ', last_name) AS name, 
                               email, phone, id, role
                        FROM users 
                        WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT profile_pic FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -74,6 +78,7 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 }
 
 // Get available locations
+<<<<<<< HEAD
 $result = $conn->query("SHOW COLUMNS FROM users LIKE 'address'");
 if ($result->num_rows > 0) {
     // If address column exists, use it
@@ -111,6 +116,12 @@ if ($tableExists) {
     // Log the issue for administrators
     error_log("Warning: skills table does not exist in the database");
 }
+=======
+$locations = $conn->query("SELECT DISTINCT address FROM users WHERE role = 'laborer'")->fetch_all(MYSQLI_ASSOC);
+
+// Get available skills - modify this part
+$skills = $conn->query("SELECT name FROM skills ORDER BY name")->fetch_all(MYSQLI_ASSOC);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 ?>
 
 <!DOCTYPE html>

@@ -31,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['withdraw_job'])) {
 
 // Get all job applications for the laborer
 $stmt = $conn->prepare("
+<<<<<<< HEAD
     SELECT j.id, j.title, j.description, j.location, j.budget, j.status, 
            CONCAT(u.first_name, ' ', u.last_name) AS customer_name, 
            u.email AS customer_email, 
@@ -38,6 +39,13 @@ $stmt = $conn->prepare("
     FROM jobs j
     JOIN users u ON j.customer_id = u.id
     WHERE j.laborer_id = ? AND j.status IN ('assigned', 'in_progress')
+=======
+    SELECT j.*, u.name as employer_name, 
+           DATE_FORMAT(j.created_at, '%b %d, %Y') as applied_date
+    FROM jobs j
+    JOIN users u ON j.customer_id = u.id
+    WHERE j.laborer_id = ?
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     ORDER BY j.created_at DESC
 ");
 $stmt->bind_param("i", $laborer_id);
@@ -140,8 +148,13 @@ $updates = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <?php foreach ($applications as $app): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($app['title']); ?></td>
+<<<<<<< HEAD
                         <td><?php echo htmlspecialchars($app['customer_name']); ?></td>
                         <td><?php echo $app['created_at']; ?></td>
+=======
+                        <td><?php echo htmlspecialchars($app['employer_name']); ?></td>
+                        <td><?php echo $app['applied_date']; ?></td>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                         <td class="<?php echo strtolower($app['status']); ?>">
                             <?php echo ucfirst($app['status']); ?>
                         </td>

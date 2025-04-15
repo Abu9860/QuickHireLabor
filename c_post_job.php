@@ -8,15 +8,20 @@ if (!isLoggedIn() || !isCustomer()) {
 
 // Get user data and skills
 $user_id = $_SESSION['user_id'];
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT NULL AS profile_pic, 
                               CONCAT(first_name, ' ', last_name) AS name, 
                               email, phone, id, role
                        FROM users 
                        WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT profile_pic FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
 
+<<<<<<< HEAD
 // Check if the skills table exists and fetch skills
 $hasSkillsTable = $conn->query("SHOW TABLES LIKE 'skills'")->num_rows > 0;
 
@@ -34,6 +39,12 @@ if ($hasSkillsTable) {
         ['id' => 5, 'name' => 'Cleaning']
     ];
 }
+=======
+// Get available skills before the form
+$stmt = $conn->prepare("SELECT * FROM skills ORDER BY name");
+$stmt->execute();
+$skills = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -55,10 +66,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Start transaction
         $conn->begin_transaction();
 
+<<<<<<< HEAD
         // Remove both 'scheduled_date' and 'required_skills' from the column list
         $stmt = $conn->prepare("INSERT INTO jobs (title, description, location, budget, customer_id, status) 
                                VALUES (?, ?, ?, ?, ?, 'pending')");
         $stmt->bind_param("sssdi", $title, $description, $location, $budget, $user_id);
+=======
+        // Insert job
+        $stmt = $conn->prepare("INSERT INTO jobs (title, description, location, price, scheduled_date, customer_id, required_skills, status) 
+                               VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("sssdsss", $title, $description, $location, $budget, $date, $user_id, $skills);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 
         if (!$stmt->execute()) {
             throw new Exception($conn->error);

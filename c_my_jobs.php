@@ -68,6 +68,7 @@ if (isset($_POST['filter'])) {
 }
 
 // Get all jobs with statistics
+<<<<<<< HEAD
 $hasSkillsTable = $conn->query("SHOW TABLES LIKE 'laborer_skills'")->num_rows > 0;
 
 if ($hasSkillsTable) {
@@ -97,6 +98,30 @@ if ($hasSkillsTable) {
     $jobs = []; // Empty array as fallback
     error_log("Warning: laborer_skills table does not exist in the database");
 }
+=======
+$stmt = $conn->prepare("
+    SELECT 
+        j.*,
+        CONCAT(u.first_name, ' ', u.last_name) as laborer_name,
+        u.phone as laborer_phone,
+        u.profile_pic as laborer_pic,
+        u.address as laborer_address,
+        COUNT(DISTINCT r.id) as total_reviews,
+        AVG(r.rating) as avg_rating,
+        GROUP_CONCAT(DISTINCT s.name) as required_skills
+    FROM jobs j
+    LEFT JOIN users u ON j.laborer_id = u.id
+    LEFT JOIN ratings r ON u.id = r.laborer_id
+    LEFT JOIN laborer_skills ls ON u.id = ls.laborer_id
+    LEFT JOIN skills s ON ls.skill_id = s.id
+    WHERE j.customer_id = ?
+    GROUP BY j.id
+    ORDER BY j.created_at DESC
+");
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$jobs = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 
 // Get statistics
 $total_jobs = count($jobs);

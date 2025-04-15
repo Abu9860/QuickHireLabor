@@ -56,8 +56,13 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 // Get all jobs with related information
 $jobs = [];
 $sql = "SELECT j.*, 
+<<<<<<< HEAD
         c.first_name as customer_name,
         l.first_name as laborer_name
+=======
+        c.name as customer_name,
+        l.name as laborer_name
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         FROM jobs j
         JOIN users c ON j.customer_id = c.id
         LEFT JOIN users l ON j.laborer_id = l.id
@@ -125,10 +130,14 @@ if ($result && $result->num_rows > 0) {
                             <td><?php echo $job['title']; ?></td>
                             <td><?php echo $job['customer_name']; ?></td>
                             <td><?php echo $job['laborer_name'] ?? 'Not Assigned'; ?></td>
+<<<<<<< HEAD
                             <td>₹<?php 
                                 $jobPrice = isset($job['price']) ? $job['price'] : (isset($job['budget']) ? $job['budget'] : 0.00);
                                 echo number_format($jobPrice, 2); 
                             ?></td>
+=======
+                            <td>$<?php echo number_format($job['price'], 2); ?></td>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             <td>
                                 <form method="POST" style="display: inline;">
                                     <input type="hidden" name="job_id" value="<?php echo $job['id']; ?>">

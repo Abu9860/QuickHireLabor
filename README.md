@@ -20,6 +20,7 @@
      define('DB_HOST', 'localhost');
      define('DB_USER', 'root');
      define('DB_PASS', '');
+<<<<<<< HEAD
      define('DB_NAME', '');
      ```
 
@@ -28,6 +29,17 @@
      - 📁 Creates necessary directories and permissions
      - 🖼️ Sets up upload folders for images
    - 🔧
+=======
+     define('DB_NAME', 'lastop');
+     ```
+
+3. **🔨 Run Setup Scripts**
+   - 🔗 Access setup.php: http://localhost/QuickHireLabor/setup.php
+     - 📁 Creates necessary directories and permissions
+     - 🖼️ Sets up upload folders for images
+   - 🔧 Access sql_setup.php: http://localhost/QuickHireLabor/sql_setup.php
+     - 📊 Creates database tables
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
      - 🔄 Inserts initial data:
        - 👨‍💼 Admin user
        - 👥 Sample users
@@ -40,7 +52,17 @@
    - 📧 Email: admin@lastop.com
    - 🔒 Password: admin123
 
+<<<<<<< HEAD
   
+=======
+   **👷 Labor Account**
+   - 📧 Email: labor@gmail.com
+   - 🔒 Password: labor123
+
+   **👤 Customer Account**
+   - 📧 Email: customer@gmail.com
+   - 🔒 Password: customer123
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 
 5. **📁 File Structure**
 ```

@@ -7,12 +7,15 @@ if (!isLoggedIn() || !isAdmin()) {
     exit();
 }
 
+<<<<<<< HEAD
 // Function to check if a table exists
 function tableExists($conn, $tableName) {
     $result = $conn->query("SHOW TABLES LIKE '$tableName'");
     return $result && $result->num_rows > 0;
 }
 
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 // Handle rating deletion if requested
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $rating_id = (int)$_GET['id'];
@@ -28,6 +31,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
 
 // Get all ratings with related information
 $ratings = [];
+<<<<<<< HEAD
 
 // Check if ratings table exists
 if (!tableExists($conn, 'ratings')) {
@@ -68,6 +72,23 @@ if (!tableExists($conn, 'ratings')) {
     } else if ($result === false) {
         // Display the SQL error for debugging
         $setup_error = "SQL Error: " . $conn->error;
+=======
+$sql = "SELECT r.*, 
+        j.title as job_title,
+        c.name as customer_name,
+        l.name as laborer_name,
+        j.id as job_id
+        FROM ratings r
+        JOIN jobs j ON r.job_id = j.id
+        JOIN users c ON r.customer_id = c.id
+        JOIN users l ON r.laborer_id = l.id
+        ORDER BY r.created_at DESC";
+
+$result = $conn->query($sql);
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $ratings[] = $row;
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
     }
 }
 ?>
@@ -96,10 +117,13 @@ if (!tableExists($conn, 'ratings')) {
             <div class="alert error"><?php echo $delete_error; ?></div>
         <?php endif; ?>
 
+<<<<<<< HEAD
         <?php if (isset($setup_error)): ?>
             <div class="alert error"><?php echo $setup_error; ?></div>
         <?php endif; ?>
 
+=======
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         <div class="table-section">
             <h3>All Ratings</h3>
             <?php if (!empty($ratings)): ?>
@@ -137,8 +161,12 @@ if (!tableExists($conn, 'ratings')) {
                                     ?>
                                 </div>
                             </td>
+<<<<<<< HEAD
                             <?php $feedback = isset($rating['feedback']) ? $rating['feedback'] : ''; ?>
                             <td><?php echo htmlspecialchars($feedback); ?></td>
+=======
+                            <td><?php echo htmlspecialchars($rating['feedback']); ?></td>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                             <td><?php echo date('M d, Y', strtotime($rating['created_at'])); ?></td>
                             <td>
                                 <a href="ratings.php?action=delete&id=<?php echo $rating['id']; ?>" 
@@ -151,7 +179,11 @@ if (!tableExists($conn, 'ratings')) {
                     <?php endforeach; ?>
                 </table>
             <?php else: ?>
+<<<<<<< HEAD
                 <p><?php echo isset($setup_error) ? "Fix database setup to view ratings." : "No ratings found."; ?></p>
+=======
+                <p>No ratings found.</p>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
             <?php endif; ?>
         </div>
     </div>

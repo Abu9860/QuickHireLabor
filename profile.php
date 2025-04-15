@@ -11,7 +11,11 @@ $errors = [];
 $success = false;
 
 // Get current user's details
+<<<<<<< HEAD
 $stmt = $conn->prepare("SELECT first_name, email, phone FROM users WHERE id = ?");
+=======
+$stmt = $conn->prepare("SELECT name, email, phone FROM users WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $user = $stmt->get_result()->fetch_assoc();
@@ -50,7 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($errors)) {
+<<<<<<< HEAD
         $stmt = $conn->prepare("UPDATE users SET first_name = ?, email = ?, phone = ? WHERE id = ?");
+=======
+        $stmt = $conn->prepare("UPDATE users SET name = ?, email = ?, phone = ? WHERE id = ?");
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
         $stmt->bind_param("sssi", $name, $email, $phone, $_SESSION['user_id']);
         
         if ($stmt->execute()) {
@@ -100,7 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <form method="POST" class="admin-form">
                 <div class="form-group">
                     <label for="name">Name:</label>
+<<<<<<< HEAD
                     <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['first_name']); ?>" required>
+=======
+                    <input type="text" id="name" name="name" value="<?php echo htmlspecialchars($user['name']); ?>" required>
+>>>>>>> 502667e9b8a70d5c5e5573eee70fa1d456f706f9
                 </div>
 
                 <div class="form-group">
